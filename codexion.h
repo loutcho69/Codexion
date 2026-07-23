@@ -61,6 +61,17 @@ typedef struct s_table
     pthread_mutex_t print_mutex;
     pthread_mutex_t stop_mutex;
 }   t_table;
+// --TIME-----------------------------------------
+struct timeval
+{
+    time_t      tv_sec;    // secondes depuis le 1er janvier 1970
+    suseconds_t tv_usec;   // microsecondes écoulées DANS la seconde courante
+};
+
+long get_time_ms(void);
+int  simulation_stopped(t_table *table);
+void log_state(t_table *table, int id, char *msg);
+void precise_usleep(long duration_ms, t_table *table);
 
 // -- Parsing ------------------------------
 int is_valid_number(char *str);
