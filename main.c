@@ -4,10 +4,14 @@
 
 int main(int argc, char **argv)
 {
-    t_params params;
+    t_table table;
 
-    if (parse_args(argc, argv, &params) != 0)
+    if (parse_args(argc, argv, &table.params))
         return (1);
-    printf("OK: %d coders, sched=%d\n", params.nb_coders, params.scheduler);
+    if (init_table(&table))
+        return (1);
+    printf("Init OK: %d coders\n", table.params.nb_coders);
+    free(table.coders);
+    free(table.dongles);
     return (0);
 }
