@@ -1,9 +1,20 @@
 #ifndef CODEXION_H
-#define CODEXION_H
+# define CODEXION_H
 
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
+# include <pthread.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/time.h>
+# include <unistd.h>
+# include <limits.h>
+
+// ── Forward declarations ──────────────────
+typedef struct s_table  t_table;
+typedef struct s_coder  t_coder;
+typedef struct s_dongle t_dongle;
+
+// ── Params ────────────────────────────────
 typedef struct s_params
 {
     int nb_coders;
@@ -16,6 +27,30 @@ typedef struct s_params
     int scheduler;
 }   t_params;
 
+// ── Dongle ────────────────────────────────
+struct s_dongle
+{
+    int             id;
+    pthread_mutex_t mutex;
+    long last_release;
+    int taken;
+    pthread_cond_t available_cond;
+};
+
+// ── Coder ─────────────────────────────────
+struct s_coder
+{
+    int             id;
+    pthread_t       thread;
+    long last_compil_start;
+    int compil_count;
+    int left_dongle;
+    int right_dongle;
+    t_table *table;
+    pthread_mutex_t state_mutex;
+};
+
+// ── Table ─────────────────────────────────
 typedef struct s_table
 {
     t_params        params;
@@ -27,4 +62,11 @@ typedef struct s_table
     pthread_mutex_t stop_mutex;
 }   t_table;
 
+// -- Parsing ------------------------------
+int is_valid_number(char *str);
+int ft_atoi_safe(char *str, int *result);
+int parse_one_int(char *str, int *dest);
+int parse_scheduler(char *str, t_params *params);
+int error_print(char *str);
+int parse_args(int argc, char **argv, t_params *params);
 #endif
