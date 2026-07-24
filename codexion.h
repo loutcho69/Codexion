@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 19:50:20 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/24 22:55:50 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,12 @@ int  simulation_stopped(t_table *table);
 void log_state(t_table *table, int id, char *msg);
 void precise_usleep(long duration_ms, t_table *table);
 // CODER-----------------------
-void *coder_routine(void *arg);
-int   start_simulation(t_table *table);
+void	take_dongle(t_dongle *dongle, t_coder *coder);
+void	release_dongle(t_dongle *dongle);
+void	set_last_compil(t_coder *coder, long time);
+void	*coder_routine(void *arg);
+int		start_simulation(t_table *table);
+void	take_both_dongles(t_coder *coder);
 
 // -- Parsing ------------------------------
 int is_valid_number(char *str);
