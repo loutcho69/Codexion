@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:07 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 22:54:14 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/24 23:13:57 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,22 +78,25 @@ void	*coder_routine(void *arg)
 	}
 	return (NULL);
 }
-int start_simulation(t_table *table)
+int	start_simulation(t_table *table)
 {
-    int i;
+	pthread_t	monitor;
+	int			i;
 
-    i = 0;
-    while (i < table->params.nb_coders)
-    {
-        pthread_create(&table->coders[i].thread, NULL,
-                       coder_routine, &table->coders[i]);
-        i++;
-    }
-    i = 0;
-    while (i < table->params.nb_coders)
-    {
-        pthread_join(table->coders[i].thread, NULL);
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (i < table->params.nb_coders)
+	{
+		pthread_create(&table->coders[i].thread, NULL,
+			coder_routine, &table->coders[i]);
+		i++;
+	}
+	pthread_create(&monitor, NULL, monitor_routine, table);
+	pthread_join(monitor, NULL);
+	i = 0;
+	while (i < table->params.nb_coders)
+	{
+		pthread_join(table->coders[i].thread, NULL);
+		i++;
+	}
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 22:55:50 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/24 23:14:24 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,10 @@ void	set_last_compil(t_coder *coder, long time);
 void	*coder_routine(void *arg);
 int		start_simulation(t_table *table);
 void	take_both_dongles(t_coder *coder);
-
+// MONITOR -----------------------------
+long	get_last_compil(t_coder *coder);
+void	set_stop(t_table *table);
+void	*monitor_routine(void *arg);
 // -- Parsing ------------------------------
 int is_valid_number(char *str);
 int ft_atoi_safe(char *str, int *result);   
