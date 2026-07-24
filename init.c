@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/24 19:50:27 by lobroue           #+#    #+#             */
+/*   Updated: 2026/07/24 19:50:27 by lobroue          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "codexion.h"
 
 void init_dongles(t_table *table)
@@ -34,7 +46,7 @@ void init_coders(t_table *table)
     }
 }
 
-int init_table(t_table *table)
+int init_table(t_table *table) 
 {
     table->coders = malloc(sizeof(t_coder) * table->params.nb_coders);
     if (!table->coders)

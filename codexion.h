@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
+/*   Updated: 2026/07/24 19:50:20 by lobroue          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CODEXION_H
 # define CODEXION_H
 
@@ -70,10 +82,13 @@ long get_time_ms(void);
 int  simulation_stopped(t_table *table);
 void log_state(t_table *table, int id, char *msg);
 void precise_usleep(long duration_ms, t_table *table);
+// CODER-----------------------
+void *coder_routine(void *arg);
+int   start_simulation(t_table *table);
 
 // -- Parsing ------------------------------
 int is_valid_number(char *str);
-int ft_atoi_safe(char *str, int *result);
+int ft_atoi_safe(char *str, int *result);   
 int parse_one_int(char *str, int *dest);
 int parse_scheduler(char *str, t_params *params);
 int error_print(char *str);
