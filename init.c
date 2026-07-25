@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:27 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/25 11:24:00 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 13:39:56 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ int init_table(t_table *table)
     table->start_time = get_time_ms();
     pthread_mutex_init(&table->print_mutex, NULL);
     pthread_mutex_init(&table->stop_mutex, NULL);
+    table->seq_counter = 0;
+    pthread_mutex_init(&table->seq_mutex, NULL);    
     init_dongles(table);
     init_coders(table);
     return (0);

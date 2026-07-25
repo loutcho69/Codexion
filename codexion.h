@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/25 11:29:38 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 13:54:35 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ typedef struct s_heap
 int heap_init(t_heap *heap, int capacity);
 void heap_free(t_heap *heap);
 void	heap_push(t_heap *heap, t_request req);
+t_request	heap_pop(t_heap *heap);
+t_request	heap_peek(t_heap *heap);
 
 // ── Params ────────────────────────────────
 typedef struct s_params
@@ -90,17 +92,21 @@ typedef struct s_table
     int             stop;
     pthread_mutex_t print_mutex;
     pthread_mutex_t stop_mutex;
+    long            seq_counter;
+    pthread_mutex_t seq_mutex;
 }   t_table;
 // -- INIT ---------------------------------------
 void init_dongles(t_table *table);
 void init_coders(t_table *table);
 int  init_table(t_table *table);
+long	compute_key(t_coder *coder);
 
 // --TIME-----------------------------------------
 long get_time_ms(void);
 int  simulation_stopped(t_table *table);
 void log_state(t_table *table, int id, char *msg);
 void precise_usleep(long duration_ms, t_table *table);
+void	set_timeout(struct timespec *ts, long ms);
 // CODER-----------------------
 void	take_dongle(t_dongle *dongle, t_coder *coder);
 void	release_dongle(t_dongle *dongle);
@@ -112,6 +118,9 @@ void	take_both_dongles(t_coder *coder);
 long	get_last_compil(t_coder *coder);
 void	set_stop(t_table *table);
 void	*monitor_routine(void *arg);
+void	increment_compil(t_coder *coder);
+int		get_compil_count(t_coder *coder);
+int		all_compiled_enough(t_table *table);
 // -- Parsing ------------------------------
 int is_valid_number(char *str);
 int ft_atoi_safe(char *str, int *result);   
@@ -119,4 +128,7 @@ int parse_one_int(char *str, int *dest);
 int parse_scheduler(char *str, t_params *params);
 int error_print(char *str);
 int parse_args(int argc, char **argv, t_params *params);
+
+// CLEANUP -------------------------------
+void	cleanup(t_table *table);
 #endif

@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:36 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 19:50:36 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 13:45:20 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,14 @@ void precise_usleep(long duration_ms, t_table *table)
             break;
         usleep(200);
     }
+}
+void	set_timeout(struct timespec *ts, long ms)
+{
+	clock_gettime(CLOCK_REALTIME, ts);
+	ts->tv_nsec += ms * 1000000;
+	while (ts->tv_nsec >= 1000000000)
+	{
+		ts->tv_sec += 1;
+		ts->tv_nsec -= 1000000000;
+	}
 }

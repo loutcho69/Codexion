@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:09:25 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 23:11:13 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 13:49:59 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,38 @@ void	set_stop(t_table *table)
 	pthread_mutex_unlock(&table->stop_mutex);
 }
 
+void	increment_compil(t_coder *coder)
+{
+	pthread_mutex_lock(&coder->state_mutex);
+	coder->compil_count++;
+	pthread_mutex_unlock(&coder->state_mutex);
+}
+
+int	get_compil_count(t_coder *coder)
+{
+	int	ret;
+
+	pthread_mutex_lock(&coder->state_mutex);
+	ret = coder->compil_count;
+	pthread_mutex_unlock(&coder->state_mutex);
+	return (ret);
+}
+
+int	all_compiled_enough(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	while (i < table->params.nb_coders)
+	{
+		if (get_compil_count(&table->coders[i])
+			< table->params.compiles_required)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_table	*table;
@@ -48,6 +80,11 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 			}
 			i++;
+		}
+		if (all_compiled_enough(table))
+		{
+			set_stop(table);
+			return (NULL);
 		}
 		usleep(1000);
 	}

@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:07 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 23:13:57 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 13:52:48 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,34 @@ void set_last_compil(t_coder *coder, long time)
     pthread_mutex_unlock(&coder->state_mutex);
 }
 
-void take_dongle(t_dongle *dongle, t_coder *coder)
+void	take_dongle(t_dongle *dongle, t_coder *coder)
 {
-    pthread_mutex_lock(&dongle->mutex);
-    while (dongle->taken
-    || get_time_ms() < dongle->last_release
-        + coder->table->params.dongle_cooldown)
-        pthread_cond_wait(&dongle->available_cond, &dongle->mutex);
-    dongle->taken = 1;
-    pthread_mutex_unlock(&dongle->mutex);
-    log_state(coder->table, coder->id, "has taken a dongle");
-}
+	t_request		req;
+	struct timespec	ts;
 
+	req.coder_id = coder->id;
+	req.key = compute_key(coder);
+	pthread_mutex_lock(&dongle->mutex);
+	heap_push(&dongle->queue, req);
+	while (dongle->taken
+		|| get_time_ms() < dongle->last_release
+			+ coder->table->params.dongle_cooldown
+		|| heap_peek(&dongle->queue).coder_id != coder->id)
+	{
+		if (simulation_stopped(coder->table))
+		{
+			heap_pop(&dongle->queue);
+			pthread_mutex_unlock(&dongle->mutex);
+			return ;
+		}
+		set_timeout(&ts, 1);
+		pthread_cond_timedwait(&dongle->available_cond, &dongle->mutex, &ts);
+	}
+	heap_pop(&dongle->queue);
+	dongle->taken = 1;
+	pthread_mutex_unlock(&dongle->mutex);
+	log_state(coder->table, coder->id, "has taken a dongle");
+}
 void release_dongle(t_dongle *dongle)
 {
     pthread_mutex_lock(&dongle->mutex);
