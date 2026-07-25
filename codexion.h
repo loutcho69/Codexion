@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 23:14:24 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 11:29:38 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,23 @@
 typedef struct s_table  t_table;
 typedef struct s_coder  t_coder;
 typedef struct s_dongle t_dongle;
+// HEAP ---------------------
+typedef struct s_request
+{
+    int     coder_id;
+    long    key;
+}   t_request;
+
+typedef struct s_heap
+{
+    t_request   *data;
+    int         size;
+    int         capacity;
+}   t_heap;
+
+int heap_init(t_heap *heap, int capacity);
+void heap_free(t_heap *heap);
+void	heap_push(t_heap *heap, t_request req);
 
 // ── Params ────────────────────────────────
 typedef struct s_params
@@ -46,6 +63,7 @@ struct s_dongle
     pthread_mutex_t mutex;
     long last_release;
     int taken;
+    t_heap  queue;
     pthread_cond_t available_cond;
 };
 
@@ -77,6 +95,7 @@ typedef struct s_table
 void init_dongles(t_table *table);
 void init_coders(t_table *table);
 int  init_table(t_table *table);
+
 // --TIME-----------------------------------------
 long get_time_ms(void);
 int  simulation_stopped(t_table *table);

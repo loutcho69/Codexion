@@ -6,26 +6,27 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:27 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/24 19:50:27 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/25 11:24:00 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void init_dongles(t_table *table)
+void	init_dongles(t_table *table)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (i < table->params.nb_coders)
-    {
-        table->dongles[i].id = i;
-        table->dongles[i].taken = 0;
-        table->dongles[i].last_release = 0;
-        pthread_mutex_init(&table->dongles[i].mutex, NULL);
-        pthread_cond_init(&table->dongles[i].available_cond, NULL);
-        i++;
-    }
+	i = 0;
+	while (i < table->params.nb_coders)
+	{
+		table->dongles[i].id = i;
+		table->dongles[i].taken = 0;
+		table->dongles[i].last_release = 0;
+		pthread_mutex_init(&table->dongles[i].mutex, NULL);
+		pthread_cond_init(&table->dongles[i].available_cond, NULL);
+		heap_init(&table->dongles[i].queue, table->params.nb_coders);
+		i++;
+	}
 }
 
 void init_coders(t_table *table)
