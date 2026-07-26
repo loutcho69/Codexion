@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 13:54:05 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/25 13:54:15 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/26 19:47:33 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,9 @@ void	cleanup(t_table *table)
 	pthread_mutex_destroy(&table->seq_mutex);
 	free(table->coders);
 	free(table->dongles);
+}
+
+void heap_free(t_heap *heap)
+{
+    free(heap->data);
 }

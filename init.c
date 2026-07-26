@@ -6,12 +6,21 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:27 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/26 12:15:25 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/26 19:48:27 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
+int heap_init(t_heap *heap, int capacity)
+{
+    heap->data = malloc(sizeof(t_request) * capacity);
+    if (!heap->data)
+        return (1);
+    heap->size = 0;
+    heap->capacity = capacity;
+    return (0);
+}
 void	init_dongles(t_table *table)
 {
 	int	i;
