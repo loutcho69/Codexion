@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/25 13:54:35 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/26 21:49:00 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,10 @@ void heap_free(t_heap *heap);
 void	heap_push(t_heap *heap, t_request req);
 t_request	heap_pop(t_heap *heap);
 t_request	heap_peek(t_heap *heap);
+void	heap_swap(t_request *a, t_request *b);
+int	heap_parent(int i);
+int	heap_left(int i);
+int	heap_right(int i);
 
 // ── Params ────────────────────────────────
 typedef struct s_params
