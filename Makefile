@@ -10,6 +10,8 @@ SRCS	= main.c \
 		  coder.c \
 		  monitor.c \
 		  heap.c \
+          heap_utils.c \
+          utils.c \
 		  cleanup.c
 
 OBJS	= $(SRCS:.c=.o)
