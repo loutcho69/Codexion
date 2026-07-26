@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 11:22:36 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/25 13:40:52 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/26 12:35:24 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,11 @@ long	next_seq(t_table *table)
 	pthread_mutex_unlock(&table->seq_mutex);
 	return (seq);
 }
+
 long	compute_key(t_coder *coder)
 {
-	if (coder->table->params.scheduler == 1)          // fifo
+	if (coder->table->params.scheduler == 1)
 		return (next_seq(coder->table));
-	else                                               // edf
+	else 
 		return (get_last_compil(coder) + coder->table->params.time_to_burnout);
 }
