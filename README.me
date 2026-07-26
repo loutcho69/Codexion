@@ -1,0 +1,107 @@
+*This project has been created as part of the 42 curriculum by lobroue.*
+
+# Codexion
+
+## Description
+
+Codexion is a concurrency simulation where several coders share a limited
+number of USB dongles to compile their code. Each coder is represented by a
+thread that cycles through compiling, debugging and refactoring. Compiling
+requires holding two dongles at the same time, one in each hand. If a coder
+does not start compiling within `time_to_burnout` milliseconds, they burn out
+and the simulation stops.
+
+The goal is to coordinate access to the shared dongles while avoiding deadlock,
+starvation and burnout, using POSIX threads, mutexes, condition variables and a
+custom priority queue for fair scheduling.
+
+## Instructions
+
+Compile with:
+
+    make
+
+Run with:
+
+    ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+
+- All time values are in milliseconds.
+- `scheduler` must be either `fifo` or `edf`.
+
+Example:
+
+    ./codexion 5 2000 200 200 200 10 0 fifo
+
+The simulation stops when a coder burns out, or when every coder has compiled at
+least `number_of_compiles_required` times.
+
+## Blocking cases handled
+
+- **Deadlock prevention.** A deadlock can occur if every coder grabs one dongle
+  and waits for the other, forming a circular wait (one of Coffman's four
+  conditions). To break this circular wait, even-numbered coders take their left
+  dongle first then their right, while odd-numbered coders take their right
+  dongle first then their left. This asymmetry prevents the cycle from forming.
+
+- **Starvation prevention.** Without arbitration, the fastest coder keeps
+  re-acquiring the same dongles and starves its neighbours. Each dongle owns a
+  priority queue: a coder registers a request and is only served when it reaches
+  the front of the queue. In FIFO mode, requests are served in arrival order; in
+  EDF mode, the coder with the earliest burnout deadline
+  (`last_compile_start + time_to_burnout`) is served first.
+
+- **Cooldown handling.** After a dongle is released it stays unavailable for
+  `dongle_cooldown` milliseconds. A plain `pthread_cond_wait` only wakes on a
+  signal, but the end of a cooldown emits no signal — it is simply time passing.
+  Waiting coders therefore use `pthread_cond_timedwait`, waking periodically to
+  re-check whether the cooldown has elapsed.
+
+- **Precise burnout detection.** A dedicated monitor thread continuously checks
+  each coder's elapsed time since its last compile start. When a coder exceeds
+  `time_to_burnout`, the monitor logs the burnout and stops the simulation,
+  well within the 10 ms requirement.
+
+- **Log serialization.** All state messages are printed through a single mutex
+  (`print_mutex`), so two messages can never interleave on the same line.
+
+## Thread synchronization mechanisms
+
+The program uses `pthread_mutex_t` and `pthread_cond_t` primitives, with no
+global variables — all shared state is passed through a pointer to a central
+table structure.
+
+- **One mutex per dongle** protects each dongle's state (`taken`,
+  `last_release`) and guards its condition variable and priority queue.
+
+- **One condition variable per dongle** lets waiting coders sleep instead of
+  busy-waiting. When a dongle is released, a `broadcast` wakes all waiters; each
+  re-checks whether it is at the front of the queue, and only the eligible one
+  proceeds while the others go back to sleep.
+
+- **One mutex per coder** (`state_mutex`) protects `last_compile_start` and
+  `compil_count`. This prevents a data race between the coder writing these
+  values and the monitor reading them: every access goes through a thread-safe
+  getter or setter that locks, reads or writes, then unlocks.
+
+- **`print_mutex`** serializes all logging output.
+
+- **`stop_mutex`** protects the global stop flag, read by every coder and the
+  monitor and written by the monitor.
+
+- **`seq_mutex`** protects the FIFO sequence counter, guaranteeing that two
+  coders requesting a dongle at nearly the same time receive distinct,
+  increasing sequence numbers.
+
+- **Priority queue (binary min-heap).** Each dongle uses a custom min-heap that
+  orders requests by a `key`: the sequence number in FIFO mode, the burnout
+  deadline in EDF mode. The smallest key is always at the root, so the same heap
+  serves both scheduling policies — only the key changes.
+
+## Resources
+
+- POSIX threads documentation (`pthread_create`, mutexes, condition variables,
+  `pthread_cond_timedwait`).
+- The Dining Philosophers problem, of which this project is a variant.
+- AI assistance: used to understand the underlying concepts (threads, mutexes,
+  condition variables, binary heaps) and to help debug, while writing and
+  understanding the code myself.
