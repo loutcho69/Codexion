@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:07 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/26 21:48:36 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/07/29 18:13:09 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void release_dongle(t_dongle *dongle)
     pthread_cond_broadcast(&dongle->available_cond);
     pthread_mutex_unlock(&dongle->mutex);
 }
+
 void	take_both_dongles(t_coder *coder)
 {
 	t_dongle	*left;
