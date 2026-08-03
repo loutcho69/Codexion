@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:07 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/29 18:13:09 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/04 00:53:49 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	*coder_routine(void *arg)
 		take_both_dongles(coder);
 		set_last_compil(coder, get_time_ms());
 		log_state(coder->table, coder->id, "is compiling");
-		coder->compil_count++;
+		increment_compil(coder);
 		precise_usleep(coder->table->params.time_to_compile, coder->table);
 		release_dongle(&coder->table->dongles[coder->left_dongle]);
 		release_dongle(&coder->table->dongles[coder->right_dongle]);
