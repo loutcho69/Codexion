@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/26 21:49:00 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/04 00:59:57 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ typedef struct s_table
     pthread_mutex_t seq_mutex;
 }   t_table;
 // -- INIT ---------------------------------------
-void init_dongles(t_table *table);
+int init_dongles(t_table *table);
 void init_coders(t_table *table);
 int  init_table(t_table *table);
 long	compute_key(t_coder *coder);
@@ -135,4 +135,6 @@ int parse_args(int argc, char **argv, t_params *params);
 
 // CLEANUP -------------------------------
 void	cleanup(t_table *table);
+void	destroy_dongles(t_table *table, int count);
+
 #endif
