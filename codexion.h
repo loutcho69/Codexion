@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/04 00:59:57 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/04 01:13:03 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,8 @@ void	set_last_compil(t_coder *coder, long time);
 void	*coder_routine(void *arg);
 int		start_simulation(t_table *table);
 void	take_both_dongles(t_coder *coder);
+int	join_coders(t_table *table, int count);
+
 // MONITOR -----------------------------
 long	get_last_compil(t_coder *coder);
 void	set_stop(t_table *table);

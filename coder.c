@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:07 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/04 00:53:49 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/04 01:12:49 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	*coder_routine(void *arg)
 	}
 	return (NULL);
 }
+
 int	start_simulation(t_table *table)
 {
 	pthread_t	monitor;
@@ -96,17 +97,20 @@ int	start_simulation(t_table *table)
 	i = 0;
 	while (i < table->params.nb_coders)
 	{
-		pthread_create(&table->coders[i].thread, NULL,
-			coder_routine, &table->coders[i]);
+		if (pthread_create(&table->coders[i].thread, NULL,
+				coder_routine, &table->coders[i]))
+		{
+			set_stop(table);
+			return (join_coders(table, i));
+		}
 		i++;
 	}
-	pthread_create(&monitor, NULL, monitor_routine, table);
-	pthread_join(monitor, NULL);
-	i = 0;
-	while (i < table->params.nb_coders)
+	if (pthread_create(&monitor, NULL, monitor_routine, table))
 	{
-		pthread_join(table->coders[i].thread, NULL);
-		i++;
+		set_stop(table);
+		return (join_coders(table, table->params.nb_coders));
 	}
+	pthread_join(monitor, NULL);
+	join_coders(table, table->params.nb_coders);
 	return (0);
 }
