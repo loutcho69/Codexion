@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:20 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/04 01:13:03 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/04 01:26:51 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ void	heap_swap(t_request *a, t_request *b);
 int	heap_parent(int i);
 int	heap_left(int i);
 int	heap_right(int i);
+void	heap_remove_by_id(t_heap *heap, int coder_id);  
+void	heap_sift_up(t_heap *heap, int i);
+void	heap_sift_down(t_heap *heap, int i);
 
 // ── Params ────────────────────────────────
 typedef struct s_params
