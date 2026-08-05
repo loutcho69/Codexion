@@ -37,32 +37,39 @@ least `number_of_compiles_required` times.
 
 ## Blocking cases handled
 
+- **Input validation.** All arguments are checked before the simulation starts:
+  non-integer values, negative numbers, integer overflow, a `number_of_coders`
+  below 1, and any scheduler other than `fifo` or `edf` are rejected with an
+  error message.
+
 - **Deadlock prevention.** A deadlock can occur if every coder grabs one dongle
   and waits for the other, forming a circular wait (one of Coffman's four
   conditions). To break this circular wait, even-numbered coders take their left
   dongle first then their right, while odd-numbered coders take their right
   dongle first then their left. This asymmetry prevents the cycle from forming.
 
-- **Starvation prevention.** Without arbitration, the fastest coder keeps
-  re-acquiring the same dongles and starves its neighbours. Each dongle owns a
-  priority queue: a coder registers a request and is only served when it reaches
-  the front of the queue. In FIFO mode, requests are served in arrival order; in
-  EDF mode, the coder with the earliest burnout deadline
-  (`last_compile_start + time_to_burnout`) is served first.
+- **Starvation prevention.** Each dongle owns a priority queue. A coder registers
+  a request and is only granted the dongle when it reaches the front of the
+  queue. In FIFO mode, requests are served in arrival order; in EDF mode, the
+  coder with the earliest burnout deadline (`last_compile_start +
+  time_to_burnout`) is served first.
 
 - **Cooldown handling.** After a dongle is released it stays unavailable for
-  `dongle_cooldown` milliseconds. A plain `pthread_cond_wait` only wakes on a
-  signal, but the end of a cooldown emits no signal — it is simply time passing.
-  Waiting coders therefore use `pthread_cond_timedwait`, waking periodically to
-  re-check whether the cooldown has elapsed.
+  `dongle_cooldown` milliseconds. Since the end of a cooldown emits no signal —
+  it is simply time passing — waiting coders use `pthread_cond_timedwait`,
+  waking periodically to re-check whether the cooldown has elapsed.
 
 - **Precise burnout detection.** A dedicated monitor thread continuously checks
   each coder's elapsed time since its last compile start. When a coder exceeds
   `time_to_burnout`, the monitor logs the burnout and stops the simulation,
-  well within the 10 ms requirement.
+  within the 10 ms requirement.
 
 - **Log serialization.** All state messages are printed through a single mutex
   (`print_mutex`), so two messages can never interleave on the same line.
+
+- **Clean shutdown.** When the simulation stops, coders waiting on a dongle
+  remove their pending request from the queue and exit without acquiring it, so
+  no thread stays blocked and every thread can be joined.
 
 ## Thread synchronization mechanisms
 
@@ -74,14 +81,15 @@ table structure.
   `last_release`) and guards its condition variable and priority queue.
 
 - **One condition variable per dongle** lets waiting coders sleep instead of
-  busy-waiting. When a dongle is released, a `broadcast` wakes all waiters; each
+  busy-waiting. When a dongle is released, a broadcast wakes all waiters; each
   re-checks whether it is at the front of the queue, and only the eligible one
   proceeds while the others go back to sleep.
 
 - **One mutex per coder** (`state_mutex`) protects `last_compile_start` and
-  `compil_count`. This prevents a data race between the coder writing these
-  values and the monitor reading them: every access goes through a thread-safe
-  getter or setter that locks, reads or writes, then unlocks.
+  `compil_count`. All access goes through thread-safe getters and setters
+  (`set_last_compil`, `get_last_compil`, `increment_compil`,
+  `get_compil_count`) that lock, read or write, then unlock. This prevents a
+  data race between the coder writing these values and the monitor reading them.
 
 - **`print_mutex`** serializes all logging output.
 
