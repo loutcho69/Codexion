@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:33 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/26 19:57:19 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 17:39:41 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,7 @@ int parse_args(int argc, char **argv, t_params *params)
         return(error_print("dongle_cooldown must be a non-negative integer (in milliseconds)"));
     if (parse_scheduler(argv[8], params))
         return(error_print("scheduler must be either 'fifo' or 'edf'"));
+    if (params->nb_coders < 1)
+		return (error_print("number_of_coders must be at least 1"));
     return(0);
 }
