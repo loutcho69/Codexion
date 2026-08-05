@@ -12,6 +12,7 @@ SRCS	= main.c \
           monitor_utils.c \
 		  heap.c \
           heap_utils.c \
+          heap_utils2.c \
           time_utils.c \
           utils.c \
 		  cleanup.c
