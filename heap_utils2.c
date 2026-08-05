@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/05 18:15:09 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/05 18:15:35 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 18:26:05 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	heap_remove_by_id(t_heap *heap, int coder_id)
 	heap_sift_down(heap, i);
 	heap_sift_up(heap, i);
 }
+
 void	heap_sift_up(t_heap *heap, int i)
 {
 	while (i > 0 && heap->data[i].key < heap->data[heap_parent(i)].key)
@@ -34,6 +35,7 @@ void	heap_sift_up(t_heap *heap, int i)
 		i = heap_parent(i);
 	}
 }
+
 void	heap_sift_down(t_heap *heap, int i)
 {
 	int	smallest;

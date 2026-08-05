@@ -30,9 +30,9 @@ void	cleanup(t_table *table)
 	free(table->dongles);
 }
 
-void heap_free(t_heap *heap)
+void	heap_free(t_heap *heap)
 {
-    free(heap->data);
+	free(heap->data);
 }
 
 void	destroy_dongles(t_table *table, int count)

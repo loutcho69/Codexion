@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 19:54:27 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/29 22:51:58 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 18:33:02 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	increment_compil(t_coder *coder)
 	coder->compil_count++;
 	pthread_mutex_unlock(&coder->state_mutex);
 }
-
-
 
 int	get_compil_count(t_coder *coder)
 {

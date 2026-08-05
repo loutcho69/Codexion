@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 19:50:07 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/04 01:12:49 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 18:25:38 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ void	take_dongle(t_dongle *dongle, t_coder *coder)
 	req.key = compute_key(coder);
 	pthread_mutex_lock(&dongle->mutex);
 	heap_push(&dongle->queue, req);
-	while (dongle->taken
-		|| get_time_ms() < dongle->last_release
-			+ coder->table->params.dongle_cooldown
+	while (dongle->taken || get_time_ms() < dongle->last_release
+		+ coder->table->params.dongle_cooldown
 		|| heap_peek(&dongle->queue).coder_id != coder->id)
 	{
 		if (simulation_stopped(coder->table))
@@ -40,13 +39,14 @@ void	take_dongle(t_dongle *dongle, t_coder *coder)
 	pthread_mutex_unlock(&dongle->mutex);
 	log_state(coder->table, coder->id, "has taken a dongle");
 }
-void release_dongle(t_dongle *dongle)
+
+void	release_dongle(t_dongle *dongle)
 {
-    pthread_mutex_lock(&dongle->mutex);
-    dongle->taken = 0;
-    dongle->last_release = get_time_ms();
-    pthread_cond_broadcast(&dongle->available_cond);
-    pthread_mutex_unlock(&dongle->mutex);
+	pthread_mutex_lock(&dongle->mutex);
+	dongle->taken = 0;
+	dongle->last_release = get_time_ms();
+	pthread_cond_broadcast(&dongle->available_cond);
+	pthread_mutex_unlock(&dongle->mutex);
 }
 
 void	take_both_dongles(t_coder *coder)
@@ -67,6 +67,7 @@ void	take_both_dongles(t_coder *coder)
 		take_dongle(left, coder);
 	}
 }
+
 void	*coder_routine(void *arg)
 {
 	t_coder	*coder;
@@ -97,8 +98,8 @@ int	start_simulation(t_table *table)
 	i = 0;
 	while (i < table->params.nb_coders)
 	{
-		if (pthread_create(&table->coders[i].thread, NULL,
-				coder_routine, &table->coders[i]))
+		if (pthread_create(&table->coders[i].thread, NULL, coder_routine,
+				&table->coders[i]))
 		{
 			set_stop(table);
 			return (join_coders(table, i));

@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:09:25 by lobroue           #+#    #+#             */
-/*   Updated: 2026/07/26 19:55:53 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 18:32:18 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	check_burnout(t_table *table)
 	}
 	return (0);
 }
+
 void	*monitor_routine(void *arg)
 {
 	t_table	*table;

@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 11:22:36 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/04 01:27:18 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 18:25:55 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	heap_push(t_heap *heap, t_request req)
 	heap->size++;
 	heap_sift_up(heap, heap->size - 1);
 }
+
 t_request	heap_pop(t_heap *heap)
 {
 	t_request	top;
@@ -49,6 +50,6 @@ long	compute_key(t_coder *coder)
 {
 	if (coder->table->params.scheduler == 1)
 		return (next_seq(coder->table));
-	else 
+	else
 		return (get_last_compil(coder) + coder->table->params.time_to_burnout);
 }

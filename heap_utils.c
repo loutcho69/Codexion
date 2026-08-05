@@ -6,7 +6,7 @@
 /*   By: lobroue <lobroue@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/26 19:46:15 by lobroue           #+#    #+#             */
-/*   Updated: 2026/08/05 18:15:44 by lobroue          ###   ########.fr       */
+/*   Updated: 2026/08/05 18:26:39 by lobroue          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	heap_swap(t_request *a, t_request *b)
 	*a = *b;
 	*b = tmp;
 }
+
 int	heap_parent(int i)
 {
 	return ((i - 1) / 2);
